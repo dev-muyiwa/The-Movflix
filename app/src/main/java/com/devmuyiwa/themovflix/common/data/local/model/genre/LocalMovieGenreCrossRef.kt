@@ -1,10 +1,9 @@
 package com.devmuyiwa.themovflix.common.data.local.model.genre
 
 import androidx.room.Entity
-import androidx.room.Index
 
-@Entity(primaryKeys = ["movieId", "genre"])
+@Entity(primaryKeys = ["movie_id", "genre_id"])
 data class LocalMovieGenreCrossRef(
-    val movieId: Long,
-    val genre: String,
+    val movie_id: Long,
+    val genre_id: Int,
 )

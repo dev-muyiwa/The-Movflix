@@ -1,4 +1,4 @@
-package com.devmuyiwa.themovflix.common.data.local.di
+package com.devmuyiwa.themovflix.common.di
 
 import com.devmuyiwa.themovflix.common.data.local.MovflixDatabase
 import com.devmuyiwa.themovflix.common.data.local.dao.MoviesDao

@@ -1,4 +1,4 @@
-package com.devmuyiwa.themovflix.common.data.local.di
+package com.devmuyiwa.themovflix.common.di
 
 import android.content.Context
 import androidx.room.Room

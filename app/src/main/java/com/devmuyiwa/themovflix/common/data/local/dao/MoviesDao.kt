@@ -1,37 +1,34 @@
 package com.devmuyiwa.themovflix.common.data.local.dao
 
 import androidx.room.*
-import com.devmuyiwa.themovflix.common.data.local.model.LocalMovie
-import com.devmuyiwa.themovflix.common.data.local.model.LocalMovieAggregate
+import com.devmuyiwa.themovflix.common.data.local.model.LocalMovieWithCategory
 import com.devmuyiwa.themovflix.common.data.local.model.genre.LocalGenre
-import com.devmuyiwa.themovflix.common.data.local.model.popularmovie.LocalPopularMovie
-import com.devmuyiwa.themovflix.common.data.local.model.popularmovie.PopularMovieWithGenre
+import com.devmuyiwa.themovflix.common.data.local.model.movie.LocalMovie
+import com.devmuyiwa.themovflix.common.domain.Category
 
 @Dao
-interface MoviesDao {
-    @Transaction
-    @Query("SELECT * FROM ${LocalPopularMovie.LOCAL_POPULAR_MOVIE} ORDER BY popularity DESC")
-    suspend fun fetchLocalPopularMoviesStream(): List<PopularMovieWithGenre>
+abstract class MoviesDao {
 
     @Transaction
-    @Query("SELECT * FROM ${LocalMovie.LOCAL_MOVIE} WHERE movieId = :id")
-    fun fetchLocalMovieInfo(id: Long): LocalMovieAggregate
+    @Query("SELECT * FROM ${LocalMovie.LOCAL_MOVIE}" +
+            " WHERE category = :category ORDER BY popularity DESC")
+    abstract suspend fun fetchMoviesByCategory(category: String): List<LocalMovieWithCategory>
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertPopularMoviesAggregate(
-        movie: LocalPopularMovie,
+    suspend fun fetchPopularMoviesStream(): List<LocalMovieWithCategory> =
+        fetchMoviesByCategory(Category.POPULAR.name)
+
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    abstract suspend fun insertPopularMoviesAggregate(
         genres: List<LocalGenre>,
+        movie: LocalMovie,
     )
 
-    suspend fun insertPopularMovies(popularMovies: List<PopularMovieWithGenre>) {
-        for (movie in popularMovies) {
-            insertPopularMoviesAggregate(
-                movie = movie.popularMovie,
-                genres = movie.genres
-            )
+    suspend fun insertPopularMovies(popularMovies: List<LocalMovieWithCategory>) {
+        popularMovies.forEach {
+            insertPopularMoviesAggregate( it.genres, it.movie)
         }
     }
 
-    @Query("DELETE FROM ${LocalPopularMovie.LOCAL_POPULAR_MOVIE} WHERE movieId IN (:movieIds)")
-    suspend fun deletePopularMovies(movieIds: List<Long>)
+    @Query("DELETE FROM ${LocalMovie.LOCAL_MOVIE} WHERE movieId IN (:movieIds)")
+    abstract suspend fun deletePopularMovies(movieIds: List<Long>)
 }

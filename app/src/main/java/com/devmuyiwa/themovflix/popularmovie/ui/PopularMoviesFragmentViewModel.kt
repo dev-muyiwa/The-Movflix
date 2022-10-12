@@ -3,7 +3,7 @@ package com.devmuyiwa.themovflix.popularmovie.ui
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.devmuyiwa.themovflix.common.domain.Resource
-import com.devmuyiwa.themovflix.common.domain.model.PopularMovie
+import com.devmuyiwa.themovflix.common.domain.model.CategorisedMovie
 import com.devmuyiwa.themovflix.common.ui.Event
 import com.devmuyiwa.themovflix.common.ui.PopularMoviesEvent
 import com.devmuyiwa.themovflix.popularmovie.domain.usecases.FetchPopularMovie
@@ -42,7 +42,7 @@ class PopularMoviesFragmentViewModel @Inject constructor(
         }
     }
 
-    private fun onLoading(result: Resource<List<PopularMovie>>) {
+    private fun onLoading(result: Resource<List<CategorisedMovie>>) {
         _state.update { oldState ->
             oldState.copy(
                 isLoading = true,
@@ -51,7 +51,7 @@ class PopularMoviesFragmentViewModel @Inject constructor(
         }
     }
 
-    private fun onSuccess(result: Resource<List<PopularMovie>>) {
+    private fun onSuccess(result: Resource<List<CategorisedMovie>>) {
         _state.update { oldState ->
             oldState.copy(
                 isLoading = false,
@@ -62,12 +62,12 @@ class PopularMoviesFragmentViewModel @Inject constructor(
     }
 
     private fun fetchPopularMovies() {
-        if (state.value.popularMoviesItem.isEmpty()){
+        if (state.value.popularMoviesItem.isEmpty()) {
             subscribeToUpdates()
         }
     }
 
-    private fun onFailure(result: Resource<List<PopularMovie>>) {
+    private fun onFailure(result: Resource<List<CategorisedMovie>>) {
         _state.update { oldState ->
             oldState.copy(
                 isLoading = false,

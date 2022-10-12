@@ -7,7 +7,7 @@ import retrofit2.http.*
 
 interface MovflixApi {
     @GET(POPULAR_MOVIE_ENDPOINT)
-    suspend fun fetchRemotePopularMovies(
+    suspend fun fetchPopularMovies(
         @Query(LANG) language: String,
         @Query(PAGE) pageToLoad: Int,
     ): RemotePopularMovieDto

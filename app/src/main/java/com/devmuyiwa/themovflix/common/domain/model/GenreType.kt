@@ -22,6 +22,7 @@ sealed class GenreType(
                 9648 -> "Mystery"
                 10402 -> "Music"
                 10749 -> "Romance"
+                10751 -> "Family"
                 10752 -> "War"
                 10770 -> "TV Movie"
                 else -> "Unknown"

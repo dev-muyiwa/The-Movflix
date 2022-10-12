@@ -1,6 +1,5 @@
-package com.devmuyiwa.themovflix.common.data.remote.interceptor
+package com.devmuyiwa.themovflix.common.data.remote.util
 
-import com.devmuyiwa.themovflix.common.data.remote.util.ConnectionManager
 import com.devmuyiwa.themovflix.common.domain.NetworkUnavailableException
 import okhttp3.Interceptor
 import okhttp3.Response

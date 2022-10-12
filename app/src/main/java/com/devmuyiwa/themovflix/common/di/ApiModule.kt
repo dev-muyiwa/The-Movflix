@@ -1,8 +1,8 @@
-package com.devmuyiwa.themovflix.common.data.remote.di
+package com.devmuyiwa.themovflix.common.di
 
 import com.devmuyiwa.themovflix.BuildConfig
 import com.devmuyiwa.themovflix.common.data.remote.MovflixApi
-import com.devmuyiwa.themovflix.common.data.remote.interceptor.NetworkStatusInterceptor
+import com.devmuyiwa.themovflix.common.data.remote.util.NetworkStatusInterceptor
 import com.devmuyiwa.themovflix.common.data.remote.util.BASE_ENDPOINT
 import com.devmuyiwa.themovflix.common.data.remote.util.KEY_NAME
 import dagger.Module

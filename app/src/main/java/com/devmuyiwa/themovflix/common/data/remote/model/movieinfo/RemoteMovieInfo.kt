@@ -1,6 +1,7 @@
 package com.devmuyiwa.themovflix.common.data.remote.model.movieinfo
 
 
+import com.devmuyiwa.themovflix.common.data.remote.util.*
 import com.devmuyiwa.themovflix.common.domain.model.Movie
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
@@ -34,23 +35,13 @@ data class RemoteMovieInfo(
 fun RemoteMovieInfo.asDomainModel() = Movie(
     movieId = movieId ?: 0,
     isAdult = isAdult ?: false,
-    backdropUrl = backdropPath.orEmpty(),
-    budget = budget ?: 0,
-    genres = genres.orEmpty().map { it?.asDomainModel().orEmpty() },
-    homepageUrl = homepage.orEmpty(),
+    backdropUrl = IMAGE_BASE_ENDPOINT + BACKDROP_SIZE + backdropPath.orEmpty(),
     originalLanguage = originalLanguage.orEmpty(),
     originalTitle = originalTitle.orEmpty(),
     overview = overview.orEmpty(),
     popularity = popularity ?: 0.0,
-    posterUrl = posterPath.orEmpty(),
-    productionCompanies = prodCompanies.orEmpty().map { it?.asDomainModel()!! },
-    productionCountries = prodCountries.orEmpty().map { it?.asDomainModel()!! },
-    casts = listOf(),
+    posterUrl = IMAGE_BASE_ENDPOINT + POSTER_SIZE + posterPath.orEmpty(),
     releaseDate = releaseDate.orEmpty(),
-    revenue = revenue ?: 0,
-    runtime = runtime ?: 0,
-    status = status.orEmpty(),
-    tagline = tagline.orEmpty(),
     title = title.orEmpty(),
     averageVote = averageVote ?: 0.0,
     voteCount = voteCount ?: 0

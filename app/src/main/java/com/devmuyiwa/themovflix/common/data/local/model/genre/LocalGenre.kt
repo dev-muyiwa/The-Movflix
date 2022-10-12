@@ -5,7 +5,8 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = LocalGenre.LOCAL_GENRE)
 data class LocalGenre(
-    @PrimaryKey(autoGenerate = false) val genre: String = "",
+    @PrimaryKey val genreId: Int = 0,
+    val genre: String = ""
 ) {
     companion object {
         const val LOCAL_GENRE = "genre"

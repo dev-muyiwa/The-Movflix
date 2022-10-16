@@ -19,7 +19,7 @@
         android:theme="@style/Theme.TheMovflix"
         tools:targetApi="31">
         <activity
-            android:name=".common.MainActivity"
+            android:name=".feature_movies.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

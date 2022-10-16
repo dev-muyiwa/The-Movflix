@@ -3,7 +3,11 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/muyiw/Documents/TheMovflix/app/src/main/res/drawable/ic_baseline_photo_24.xml" value="0.1" />
         <entry key="..\:/Users/muyiw/Documents/TheMovflix/app/src/main/res/layout/activity_main.xml" value="0.18718381112984822" />
+        <entry key="..\:/Users/muyiw/Documents/TheMovflix/app/src/main/res/layout/fragment_categorised_movies.xml" value="0.18611111111111112" />
+        <entry key="..\:/Users/muyiw/Documents/TheMovflix/app/src/main/res/layout/fragment_movie_detail.xml" value="0.20208333333333334" />
+        <entry key="..\:/Users/muyiw/Documents/TheMovflix/app/src/main/res/menu/bottom_nav_menu.xml" value="0.20208333333333334" />
       </map>
     </option>
   </component>

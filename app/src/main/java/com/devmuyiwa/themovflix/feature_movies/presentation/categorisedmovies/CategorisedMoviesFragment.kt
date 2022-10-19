@@ -1,17 +1,16 @@
-package com.devmuyiwa.themovflix.feature_movies.presentation.categorisedmovies.ui
+package com.devmuyiwa.themovflix.feature_movies.presentation.categorisedmovies
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.widget.*
+import android.view.*
+import android.widget.Toast
 import androidx.core.view.isVisible
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.*
-import com.devmuyiwa.themovflix.feature_movies.utils.Event
-import com.devmuyiwa.themovflix.feature_movies.presentation.MoviesEvent
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.devmuyiwa.themovflix.databinding.FragmentCategorisedMoviesBinding
+import com.devmuyiwa.themovflix.feature_movies.presentation.MoviesEvent
+import com.devmuyiwa.themovflix.feature_movies.utils.Event
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -31,21 +30,42 @@ class CategorisedMoviesFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        subscribeToUpdates()
+        setupUI()
         requestMovies()
     }
 
-    private fun subscribeToUpdates() {
+    private fun setupUI() {
+        val adapter = createAdapter()
+        setupRecyclerView(adapter)
+        subscribeToUpdates(adapter)
+    }
+
+    private fun createAdapter(): CategorisedMoviesAdapter {
+        return CategorisedMoviesAdapter(requireContext())
+    }
+
+    private fun setupRecyclerView(moviesAdapter: CategorisedMoviesAdapter) {
+        binding.popularMoviesRecyclerView.apply {
+            adapter = moviesAdapter
+            layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL,
+                false)
+            hasFixedSize()
+        }
+    }
+
+    private fun subscribeToUpdates(adapter: CategorisedMoviesAdapter) {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.state.collect { updateUi(it) }
+                viewModel.state.collect {
+                    updateUi(it, adapter)
+                }
             }
         }
     }
 
-    private fun updateUi(state: CategorisedMoviesState) {
+    private fun updateUi(state: CategorisedMoviesState, moviesAdapter: CategorisedMoviesAdapter) {
+        moviesAdapter.submitList(state.categorisedMovies)
         binding.progressBar.isVisible = state.isLoading
-        binding.moviesText.text = state.categorisedMovies.toString()
         handleFailure(state.failure)
     }
 

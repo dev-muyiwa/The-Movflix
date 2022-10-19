@@ -1,6 +1,7 @@
 package com.devmuyiwa.themovflix.feature_movies.data.remote.dto.movieinfo
 
 
+import com.devmuyiwa.themovflix.feature_movies.data.local.model.company.LocalProdCompany
 import com.devmuyiwa.themovflix.feature_movies.domain.model.ProdCompany
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
@@ -14,6 +15,13 @@ data class RemoteProdCompany(
 )
 
 fun RemoteProdCompany.asDomainModel() = ProdCompany(
+    companyId = companyId ?: 0,
+    logoUrl = logoPath.orEmpty(),
+    name = name.orEmpty(),
+    country = originCountry.orEmpty()
+)
+
+fun RemoteProdCompany.asEntityModel() = LocalProdCompany(
     companyId = companyId ?: 0,
     logoUrl = logoPath.orEmpty(),
     name = name.orEmpty(),

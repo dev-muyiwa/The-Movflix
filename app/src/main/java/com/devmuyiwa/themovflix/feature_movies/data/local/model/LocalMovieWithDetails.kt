@@ -24,17 +24,17 @@ data class LocalMovieWithDetails(
             parentColumn = "movieId",
             entityColumn = "genreId"
         )
-    ) val genres: List<LocalGenre>,
+    ) val genres: List<LocalGenre>? = null,
     @Relation(
         parentColumn = "movieId",
         entityColumn = "companyId",
         associateBy = Junction(LocalMovieCompanyCrossRef::class)
-    ) val productionCompanies: List<LocalProdCompany>,
+    ) val productionCompanies: List<LocalProdCompany>? = null,
     @Relation(
         parentColumn = "movieId",
         entityColumn = "isoValue",
         associateBy = Junction(LocalMovieCountryCrossRef::class)
-    ) val productionCountries: List<LocalProdCountry>,
+    ) val productionCountries: List<LocalProdCountry>? = null,
     @Relation(
         parentColumn = "movieId",
         entityColumn = "castName",
@@ -43,7 +43,7 @@ data class LocalMovieWithDetails(
     @Relation(
         parentColumn = "movieId",
         entityColumn = "movieId"
-    ) val details: LocalDetails,
+    ) val details: LocalDetails? = null,
 )
 
 fun LocalMovieWithDetails.asDomainModel() = MovieWithDetails(
@@ -53,14 +53,14 @@ fun LocalMovieWithDetails.asDomainModel() = MovieWithDetails(
 
 private fun mapDetails(details: LocalMovieWithDetails): Details =
     Details(
-        budget = details.details.budget,
-        genre = details.genres.map { it.genre },
-        homepageUrl = details.details.homepageUrl,
-        prodCompany = details.productionCompanies.map { it.asDomainModel() },
-        prodCountry = details.productionCountries.map { it.asDomainModel() },
-        revenue = details.details.revenue,
-        runtime = details.details.runtime,
-        status = details.details.status,
-        tagline = details.details.tagline
+        budget = details.details?.budget ?: 0,
+        genre = details.genres.orEmpty().map { it.genre },
+        homepageUrl = details.details?.homepageUrl.orEmpty(),
+        prodCompany = details.productionCompanies.orEmpty().map { it.asDomainModel() },
+        prodCountry = details.productionCountries.orEmpty().map { it.asDomainModel() },
+        revenue = details.details?.revenue ?: 0,
+        runtime = details.details?.runtime ?: 0,
+        status = details.details?.status.orEmpty(),
+        tagline = details.details?.tagline.orEmpty()
     )
 

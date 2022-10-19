@@ -1,6 +1,7 @@
 package com.devmuyiwa.themovflix.feature_movies.data.remote.dto.movieinfo
 
 
+import com.devmuyiwa.themovflix.feature_movies.data.local.model.country.LocalProdCountry
 import com.devmuyiwa.themovflix.feature_movies.domain.model.ProdCountry
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
@@ -12,6 +13,11 @@ data class RemoteProdCountry(
 )
 
 fun RemoteProdCountry.asDomainModel() = ProdCountry(
+    isoValue = isoValue.orEmpty(),
+    name = name.orEmpty()
+)
+
+fun RemoteProdCountry.asEntityModel() = LocalProdCountry(
     isoValue = isoValue.orEmpty(),
     name = name.orEmpty()
 )

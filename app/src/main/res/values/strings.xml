@@ -3,4 +3,15 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="all_movies">All Movies</string>
+    <string name="popular_movies_label">Popular Movies</string>
+    <string name="popular">Popular</string>
+    <string name="categorised_movie_description">A poster of a popular movie</string>
+    <string name="error">An error occurred!</string>
+    <string name="see_more">See more</string>
+    <string name="length">Length</string>
+    <string name="language">Language</string>
+    <string name="description">Description</string>
+    <string name="casts">Casts</string>
+    <string name="release_date">Release Date</string>
+    <string name="total_vote">/10 IMDb</string>
 </resources>

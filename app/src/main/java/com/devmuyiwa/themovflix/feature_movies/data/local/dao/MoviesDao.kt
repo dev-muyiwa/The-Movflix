@@ -15,7 +15,7 @@ import com.devmuyiwa.themovflix.feature_movies.utils.Category
 
 @Dao
 abstract class MoviesDao {
-    // Movies by Category
+    /** Movies by Category. */
     @Transaction
     @Query("SELECT * FROM ${LocalMovie.LOCAL_MOVIE}" +
             " WHERE category = :category ORDER BY popularity DESC")
@@ -24,50 +24,39 @@ abstract class MoviesDao {
     suspend fun fetchCategorisedMoviesStream(category: Category): List<LocalMovieWithCategory> =
         fetchMoviesByCategory(category.name)
 
-    @Transaction
-    @Query("SELECT * FROM ${LocalMovie.LOCAL_MOVIE} WHERE movieId = :movieId")
-    abstract suspend fun fetchMovieDetails(movieId: Long): LocalMovieWithDetails
-
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    abstract suspend fun insertMovie(movie: LocalMovie): Long
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    abstract suspend fun insertGenre(genre: LocalGenre): Long
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    abstract suspend fun insertDetails(details: LocalDetails): Long
-
-    // 1
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    abstract suspend fun insertPopularMovieAggregate(
+    abstract suspend fun insertCategorisedMovieAggregate(
         movie: LocalMovie,
         genre: List<LocalGenre>,
     )
 
-    // 2
-    suspend fun insertCategorisedMovies(popularMovies: List<LocalMovieWithCategory>) {
-        popularMovies.forEach {
-            insertPopularMovieAggregate(it.movie, it.genres)
+    suspend fun insertCategorisedMovies(movies: List<LocalMovieWithCategory>) {
+        movies.forEach {
+            insertCategorisedMovieAggregate(it.movie, it.genres)
         }
     }
 
-    suspend fun insertMovieDetails(movieDetails: LocalMovieWithDetails) {
-        insertMovie(movieDetails.movie)
-        insertDetails(movieDetails.details)
-        movieDetails.genres.forEach { insertGenre(it) }
-        movieDetails.productionCompanies.forEach { insertProdCompany(it) }
-        movieDetails.productionCountries.forEach { insertProdCountry(it) }
-        TODO("Add List of Casts.")
-    }
-
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    abstract suspend fun insertProdCompany(company: LocalProdCompany): Long
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    abstract suspend fun insertProdCountry(country: LocalProdCountry): Long
+    abstract suspend fun insertMovieWithDetails(
+        movie: LocalMovie,
+        details: LocalDetails,
+        genre: List<LocalGenre>,
+        prodCompany: List<LocalProdCompany>,
+        prodCountry: List<LocalProdCountry>
+    )
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     abstract suspend fun insertGenreCrossRef(join: LocalMovieGenreCrossRef): Long
+
+    @Query("DELETE FROM ${LocalMovie.LOCAL_MOVIE} WHERE movieId IN (:movieIds)")
+    abstract suspend fun deleteMovies(movieIds: List<Long>)
+
+
+    /** Movie Details.*/
+
+    @Transaction
+    @Query("SELECT * FROM ${LocalMovie.LOCAL_MOVIE} WHERE movieId = :movieId")
+    abstract suspend fun fetchMovieDetails(movieId: Long): LocalMovieWithDetails
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     abstract suspend fun insertProdCompanyCrossRef(join: LocalMovieCompanyCrossRef): Long
@@ -75,12 +64,6 @@ abstract class MoviesDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     abstract suspend fun insertProdCountryCrossRef(join: LocalMovieCountryCrossRef): Long
 
-    @Query("DELETE FROM ${LocalMovie.LOCAL_MOVIE} WHERE movieId IN (:movieIds)")
-    abstract suspend fun deleteMovies(movieIds: List<Long>)
-
     @Query("DELETE FROM ${LocalDetails.LOCAL_DETAILS} WHERE movieId = :movieId")
-    abstract suspend fun deleteMovieInfo(movieId: Long)
-
-    // Movie Details
-
+    abstract suspend fun deleteMovieWithDetails(movieId: Long)
 }

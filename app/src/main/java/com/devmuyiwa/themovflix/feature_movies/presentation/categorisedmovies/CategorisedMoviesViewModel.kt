@@ -1,10 +1,11 @@
-package com.devmuyiwa.themovflix.feature_movies.presentation.categorisedmovies.ui
+package com.devmuyiwa.themovflix.feature_movies.presentation.categorisedmovies
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.devmuyiwa.themovflix.feature_movies.utils.Category
 import com.devmuyiwa.themovflix.core.util.Resource
 import com.devmuyiwa.themovflix.feature_movies.domain.model.CategorisedMovie
+import com.devmuyiwa.themovflix.feature_movies.domain.model.asUIModel
 import com.devmuyiwa.themovflix.feature_movies.utils.Event
 import com.devmuyiwa.themovflix.feature_movies.presentation.MoviesEvent
 import com.devmuyiwa.themovflix.feature_movies.domain.usecases.GetMoviesByCategory
@@ -82,7 +83,7 @@ class CategorisedMoviesViewModel @Inject constructor(
         _state.update { oldState ->
             oldState.copy(
                 isLoading = true,
-                categorisedMovies = result.data.orEmpty()
+                categorisedMovies = result.data.orEmpty().map {movie -> movie.asUIModel()}
             )
         }
     }
@@ -91,7 +92,7 @@ class CategorisedMoviesViewModel @Inject constructor(
         _state.update { oldState ->
             oldState.copy(
                 isLoading = false,
-                categorisedMovies = result.data.orEmpty()
+                categorisedMovies = result.data.orEmpty().map { movie -> movie.asUIModel() }
             )
         }
 //        currentPage++
@@ -101,7 +102,7 @@ class CategorisedMoviesViewModel @Inject constructor(
         _state.update { oldState ->
             oldState.copy(
                 isLoading = false,
-                categorisedMovies = result.data.orEmpty(),
+                categorisedMovies = result.data.orEmpty().map { movie -> movie.asUIModel() },
                 failure = Event(result.message.orEmpty())
             )
         }

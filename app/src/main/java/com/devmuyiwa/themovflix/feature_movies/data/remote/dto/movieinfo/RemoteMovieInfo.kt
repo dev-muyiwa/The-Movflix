@@ -1,11 +1,7 @@
 package com.devmuyiwa.themovflix.feature_movies.data.remote.dto.movieinfo
 
 
-import com.devmuyiwa.themovflix.feature_movies.data.local.model.LocalMovieWithDetails
-import com.devmuyiwa.themovflix.feature_movies.data.local.model.company.LocalProdCompany
-import com.devmuyiwa.themovflix.feature_movies.data.local.model.country.LocalProdCountry
 import com.devmuyiwa.themovflix.feature_movies.data.local.model.details.LocalDetails
-import com.devmuyiwa.themovflix.feature_movies.data.local.model.genre.LocalGenre
 import com.devmuyiwa.themovflix.feature_movies.data.local.model.movie.LocalMovie
 import com.devmuyiwa.themovflix.feature_movies.data.remote.util.*
 import com.devmuyiwa.themovflix.feature_movies.domain.model.Movie
@@ -53,7 +49,7 @@ fun RemoteMovieInfo.asDomainModel() = Movie(
     voteCount = voteCount ?: 0
 )
 
-fun RemoteMovieInfo.asEntityModel() = LocalMovie(
+fun RemoteMovieInfo.asEntityMovie() = LocalMovie(
     movieId = movieId ?: 0,
     isAdult = isAdult ?: false,
     backdropUrl = IMAGE_BASE_ENDPOINT + BACKDROP_SIZE + backdropPath.orEmpty(),
@@ -68,31 +64,12 @@ fun RemoteMovieInfo.asEntityModel() = LocalMovie(
     voteCount = voteCount ?: 0
 )
 
-fun RemoteMovieInfo.asEntity() = LocalMovieWithDetails(
-    movie = this.asEntityModel(),
-    genres = genres.orEmpty().map { LocalGenre(it?.genreId ?: 0, it?.genreName.orEmpty()) },
-    productionCompanies = prodCompanies.orEmpty().map {
-        LocalProdCompany(
-            companyId = it?.companyId ?: 0,
-            logoUrl = it?.logoPath.orEmpty(),
-            name = it?.name.orEmpty(),
-            country = it?.originCountry.orEmpty()
-        )
-    },
-    productionCountries = prodCountries.orEmpty().map {
-        LocalProdCountry(isoValue = it?.isoValue.orEmpty(), name = it?.name.orEmpty())
-    },
-    casts = listOf(),
-    details = mapDetails(this)
+fun RemoteMovieInfo.asEntityDetail() = LocalDetails(
+    budget = budget ?: 0,
+    movieId = movieId ?: 0,
+    homepageUrl = homepage.orEmpty(),
+    revenue = revenue ?: 0,
+    runtime = runtime ?: 0,
+    status = status.orEmpty(),
+    tagline = tagline.orEmpty()
 )
-
-private fun mapDetails(info: RemoteMovieInfo): LocalDetails =
-    LocalDetails(
-        budget = info.budget ?: 0,
-        movieId = info.movieId ?: 0,
-        homepageUrl = info.homepage.orEmpty(),
-        revenue = info.revenue ?: 0,
-        runtime = info.runtime ?: 0,
-        status = info.status.orEmpty(),
-        tagline = info.tagline.orEmpty()
-    )

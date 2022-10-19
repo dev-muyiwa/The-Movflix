@@ -1,5 +1,7 @@
 package com.devmuyiwa.themovflix.feature_movies.data.repository
 
+import android.util.Log
+import com.devmuyiwa.themovflix.core.util.Resource
 import com.devmuyiwa.themovflix.feature_movies.data.local.dao.MoviesDao
 import com.devmuyiwa.themovflix.feature_movies.data.local.model.LocalMovieWithCategory
 import com.devmuyiwa.themovflix.feature_movies.data.local.model.asDomainModel
@@ -10,12 +12,10 @@ import com.devmuyiwa.themovflix.feature_movies.data.local.model.genre.LocalMovie
 import com.devmuyiwa.themovflix.feature_movies.data.remote.MovflixApi
 import com.devmuyiwa.themovflix.feature_movies.data.remote.dto.category.RemoteCategorisedMovie
 import com.devmuyiwa.themovflix.feature_movies.data.remote.dto.category.asEntityModel
-import com.devmuyiwa.themovflix.feature_movies.data.remote.dto.movieinfo.asEntity
-import com.devmuyiwa.themovflix.feature_movies.utils.Category
-import com.devmuyiwa.themovflix.core.util.Resource
-import com.devmuyiwa.themovflix.core.util.NetworkUnavailableException
+import com.devmuyiwa.themovflix.feature_movies.data.remote.dto.movieinfo.*
 import com.devmuyiwa.themovflix.feature_movies.domain.model.*
 import com.devmuyiwa.themovflix.feature_movies.domain.repository.MoviesRepository
+import com.devmuyiwa.themovflix.feature_movies.utils.Category
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import retrofit2.HttpException
@@ -54,7 +54,7 @@ class MovflixRepository @Inject constructor(
                 }
                 dao.deleteMovies(movies.orEmpty().map { it!!.asEntityModel(category).movieId })
                 dao.insertCategorisedMovies(
-                    popularMovies = movies.orEmpty().map { movie ->
+                    movies = movies.orEmpty().map { movie ->
                         LocalMovieWithCategory(
                             movie = movie!!.asEntityModel(category),
                             genres = movie.genreIds.orEmpty().map { id ->
@@ -62,7 +62,6 @@ class MovflixRepository @Inject constructor(
                             })
                     })
                 movies.orEmpty().forEach { movie ->
-                    /**Inserts the Movie ID and Genre ID in the Junction Table.*/
                     movie?.genreIds.orEmpty().forEach { id ->
                         dao.insertGenreCrossRef(LocalMovieGenreCrossRef(
                             movie?.movieId ?: 0, id ?: 0
@@ -73,9 +72,9 @@ class MovflixRepository @Inject constructor(
                 emit(Resource.Error(
                     message = e.localizedMessage ?: "Oops, Something went wrong!",
                     data = localCategorisedMovies))
-            } catch (e: NetworkUnavailableException) {
+            } catch (e: IOException) {
                 emit(Resource.Error(
-                    message = e.message ?: "Network Error!",
+                    message = "Server is currently unreachable. Check your internet connection.",
                     data = localCategorisedMovies))
             }
             val newMovies = dao.fetchCategorisedMoviesStream(category).map { it.asDomainModel() }
@@ -86,12 +85,25 @@ class MovflixRepository @Inject constructor(
     override fun fetchMovieInfo(movieId: Long): Flow<Resource<MovieWithDetails>> {
         return flow {
             emit(Resource.Loading())
-            val movieDetails = dao.fetchMovieDetails(movieId).asDomainModel()
-            emit(Resource.Loading(movieDetails))
+            val localMovieDetails = dao.fetchMovieDetails(movieId).asDomainModel()
+            Log.d("Movie Details", "$localMovieDetails")
+            emit(Resource.Loading(localMovieDetails))
             try {
-                val remoteMovieDetails = api.fetchRemoteMovieInfoById(movieId)
-                dao.deleteMovieInfo(movieId)
-                dao.insertMovieDetails(remoteMovieDetails.asEntity())
+                val remoteMovieDetails: RemoteMovieInfo = api.fetchRemoteMovieInfoById(movieId)
+                dao.deleteMovieWithDetails(movieId)
+                dao.insertMovieWithDetails(
+                    movie = remoteMovieDetails.asEntityMovie(),
+                    details = remoteMovieDetails.asEntityDetail(),
+                    genre = remoteMovieDetails.genres.orEmpty().map { genre ->
+                        LocalGenre(genre?.genreId ?: 0, genre?.genreName.orEmpty())
+                    },
+                    prodCompany = remoteMovieDetails.prodCompanies.orEmpty().map { company ->
+                        company!!.asEntityModel()
+                    },
+                    prodCountry = remoteMovieDetails.prodCountries.orEmpty().map { country ->
+                        country!!.asEntityModel()
+                    }
+                )
                 remoteMovieDetails.genres.orEmpty().forEach { genre ->
                     dao.insertGenreCrossRef(LocalMovieGenreCrossRef(
                         movieId = remoteMovieDetails.movieId ?: 0, genreId = genre?.genreId ?: 0
@@ -110,12 +122,14 @@ class MovflixRepository @Inject constructor(
             } catch (e: HttpException) {
                 emit(Resource.Error(
                     message = "Oops, Something went wrong!",
-                    data = movieDetails))
+                    data = localMovieDetails))
             } catch (e: IOException) {
                 emit(Resource.Error(
                     message = "Server is currently unreachable. Check your internet connection.",
-                    data = movieDetails))
+                    data = localMovieDetails))
             }
+            val newLocalMovieWithDetails = dao.fetchMovieDetails(movieId).asDomainModel()
+            emit(Resource.Success(data = newLocalMovieWithDetails))
         }
     }
 }

@@ -20,7 +20,7 @@
     <fragment
         android:id="@+id/categorisedMoviesFragment"
         android:label="fragment_categorised_movies"
-        android:name="com.devmuyiwa.themovflix.feature_movies.presentation.categorisedmovies.ui.CategorisedMoviesFragment"
+        android:name="com.devmuyiwa.themovflix.feature_movies.presentation.categorisedmovies.CategorisedMoviesFragment"
         tools:layout="@layout/fragment_categorised_movies">
         <action
             android:id="@+id/action_categorisedMoviesFragment_to_movieDetailFragment"
@@ -31,7 +31,7 @@
     </fragment>
     <fragment
         android:id="@+id/movieDetailFragment"
-        android:name="com.devmuyiwa.themovflix.feature_movies.presentation.moviedetails.ui.MovieDetailFragment"
+        android:name="com.devmuyiwa.themovflix.feature_movies.presentation.moviedetails.MovieDetailFragment"
         android:label="fragment_movie_detail"
         tools:layout="@layout/fragment_movie_detail">
         <argument

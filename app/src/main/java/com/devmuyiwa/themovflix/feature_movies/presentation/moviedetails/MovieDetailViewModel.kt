@@ -1,8 +1,8 @@
-package com.devmuyiwa.themovflix.feature_movies.presentation.moviedetails.ui
+package com.devmuyiwa.themovflix.feature_movies.presentation.moviedetails
 
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.devmuyiwa.themovflix.core.util.Resource
+import com.devmuyiwa.themovflix.feature_movies.data.remote.util.MOVIE_ID
 import com.devmuyiwa.themovflix.feature_movies.domain.model.MovieWithDetails
 import com.devmuyiwa.themovflix.feature_movies.utils.Event
 import com.devmuyiwa.themovflix.feature_movies.domain.usecases.GetMovieDetail
@@ -14,13 +14,15 @@ import javax.inject.Inject
 @HiltViewModel
 class MovieDetailViewModel @Inject constructor(
     private val getMovieDetail: GetMovieDetail,
+    savedStateHandle: SavedStateHandle
 ) : ViewModel() {
     private val _state = MutableStateFlow(MovieDetailState())
     val state: StateFlow<MovieDetailState> = _state.asStateFlow()
 
-    // fetch id from fragment
     init {
-        getMovieInfo(276690)
+        savedStateHandle.get<Long>(MOVIE_ID)?.let {
+            getMovieInfo(it)
+        }
     }
 
     private fun getMovieInfo(movieId: Long) {

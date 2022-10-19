@@ -1,4 +1,4 @@
-package com.devmuyiwa.themovflix.feature_movies.presentation.moviedetails.ui
+package com.devmuyiwa.themovflix.feature_movies.presentation.moviedetails
 
 import com.devmuyiwa.themovflix.feature_movies.domain.model.MovieWithDetails
 import com.devmuyiwa.themovflix.feature_movies.utils.Event

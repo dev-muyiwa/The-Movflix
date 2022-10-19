@@ -1,20 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".feature_movies.presentation.categorisedmovies.ui.CategorisedMoviesFragment">
+    android:orientation="vertical"
+    tools:context=".feature_movies.presentation.categorisedmovies.CategorisedMoviesFragment">
 
     <ProgressBar
         android:id="@+id/progress_bar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"/>
+        android:layout_centerInParent="true"
+        android:indeterminate="true" />
 
-    <TextView
-        android:id="@+id/movies_text"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/popular_movies_recycler_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/half_default_margin"
+        android:descendantFocusability="blocksDescendants"
+        tools:itemCount="2"
+        tools:listitem="@layout/recycler_view_categorised_movie_item" />
 
-</FrameLayout>
+</RelativeLayout>
